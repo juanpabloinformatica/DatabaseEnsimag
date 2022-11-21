@@ -1,17 +1,16 @@
 package db;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 
-import org.w3c.dom.UserDataHandler;
 
-class ConnectDatabase(){
-    private Connection connection;
+
+/** */
+public class ConnectDatabase{
+    public Connection connection;
     // private Driver connection;
     public ConnectDatabase(String dbHost,String userName, String pwd , String dbName){
-        connect(dbHost, pwd, dbName);
+        connect(dbHost,userName,pwd, dbName);
     }
     private void connect(String dbHost, String userName,String pwd , String dbName){
-        // this.url = “jdbc:oracle:thin:tiger/scott@dbHost:1521:productDB”;
         String url = getUrl(dbHost,dbName);
         this.connection = null;
         // this.connection = DriverManager.getConnection(this.url);
@@ -20,7 +19,7 @@ class ConnectDatabase(){
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.connection = connection;
+        //this.connection = connection;
     }
     private String getUrl (String dbHost, String dbName){
         return "jdbc:oracle:thin:@"+dbHost+":1521:"+dbName;
@@ -30,9 +29,18 @@ class ConnectDatabase(){
             return this.connection;
         return null ;
     }
-    private void executeQuery(String query){
+    public void executeQuery(String query){
         if (this.connection==null)
             return;
+        PreparedStatement statement = null;
+        ResultSet rset= null;
+        try {
+            statement = this.connection.prepareStatement(query);
+            rset = statement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("" + rset);
         //execute query
         
     }
